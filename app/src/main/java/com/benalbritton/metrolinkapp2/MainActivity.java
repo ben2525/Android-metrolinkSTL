@@ -51,17 +51,17 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         public void onTick(long millisUntilFinished) {
-            /*
+
             tv.setText("" + String.format("%d:%d",
                     TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
                     TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
                             TimeUnit.MINUTES.toSeconds
                                     (TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
-            */
+            /*
 
             tv.setText(String.format("%02d:%02d:%02d", millisUntilFinished / 3600/1000,
                     (millisUntilFinished % 3600) / 60/1000, (millisUntilFinished % 60)/1000));
-
+            */
                     //(millisUntilFinished/1000)+"");
             //System.out.println("Timer  : " + (millisUntilFinished/1000));
         }
