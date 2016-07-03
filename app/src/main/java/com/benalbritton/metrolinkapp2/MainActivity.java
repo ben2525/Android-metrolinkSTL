@@ -16,16 +16,17 @@ public class MainActivity extends AppCompatActivity {
     //private final long startTime = 50000;
     private final long interval = 1000;
     TextView tv;
-    MyCounter metrolinkTimer = null;
+    //MyCounter metrolinkTimer = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        run();
+        //run();
     }
 
+    /*
     private void run() {
 
         ArrivalTimes arrivalTimes = new ArrivalTimes(this);
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                     TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
                             TimeUnit.MINUTES.toSeconds
                                     (TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
-            */
+
 
             tv.setText(String.format("%02d:%02d:%02d", millisUntilFinished / 3600/1000,
                     ((millisUntilFinished / 1000) % 3600) / 60, (((millisUntilFinished / 1000) % 3600) % 60)));
@@ -75,4 +76,5 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         cancelTimer();
     }
+    */
 }

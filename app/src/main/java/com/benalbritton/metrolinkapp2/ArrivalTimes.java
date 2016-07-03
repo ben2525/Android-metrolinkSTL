@@ -32,7 +32,8 @@ public class ArrivalTimes {
 
 
     private static final String WEEKDAY_TABLE = "stopsmf";
-    private static final String WEEKEND_TABLE = "stopsss";
+    private static final String SATURDAY_TABLE = "stopssat";
+    private static final String SUNDAY_TABLE = "stopssun";
 
     private HashMap<String, String> dbTableMap() {
         HashMap<String, String> tableMap = new HashMap<>();
@@ -42,8 +43,8 @@ public class ArrivalTimes {
         tableMap.put("Wednesday", WEEKDAY_TABLE);
         tableMap.put("Thursday", WEEKDAY_TABLE);
         tableMap.put("Friday", WEEKDAY_TABLE);
-        tableMap.put("Saturday", WEEKEND_TABLE);
-        tableMap.put("Sunday", WEEKEND_TABLE);
+        tableMap.put("Saturday", SATURDAY_TABLE);
+        tableMap.put("Sunday", SUNDAY_TABLE);
 
         return tableMap;
     }
