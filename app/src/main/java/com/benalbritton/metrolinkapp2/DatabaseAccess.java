@@ -38,8 +38,7 @@ public class DatabaseAccess {
 
     public Cursor getStations() {
         String sqlStations = "SELECT * FROM stations";
-        Cursor c = db.rawQuery(sqlStations, null);
-        return c;
+        return db.rawQuery(sqlStations, null);
     }
 
     public Cursor arriveTimes(String scheduleTable, String closestStation, double currentTime) {
@@ -50,7 +49,6 @@ public class DatabaseAccess {
                 + " AND cast(" + scheduleTable + ".arrival_time as REAL) > " + currentTime +
                 ";";
 
-        Cursor c = db.rawQuery(sqlTimes, null);
         return db.rawQuery(sqlTimes, null);
     }
 

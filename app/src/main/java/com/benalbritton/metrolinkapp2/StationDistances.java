@@ -19,13 +19,6 @@ public class StationDistances {
     }
 
     /*
-    public StationsDistances(Context context) {
-        databaseAccess = DatabaseAccess.getDbInstance(context);
-        userLocationInfo = new UserLocationInfo(context);
-    }
-    */
-
-    /*
     public ArrayList<Station> getStationList() {
         return stationList;
     }
@@ -36,8 +29,8 @@ public class StationDistances {
         double stationDist = 1000000;
 
         // need to refactor - creation of station listing in separate class
-        // or create 2 arraylists - DO not know yet
-        // YES I DO KNOW!  One class to get arraylist of station info, then pass that to class
+        // or create 2 arraylists -
+        //   One class to get arraylist of station info, then pass that to class
         // to get closest station
         // Will need to get rid of getter method getStationList() and modify the constructor
         stationList = getStationsInfo();
@@ -68,8 +61,9 @@ public class StationDistances {
                 allStations.add(station);
                 c.moveToNext();
             }
+            c.close();
         }
-        c.close();
+
         databaseAccess.close();
 
         return allStations;

@@ -29,7 +29,7 @@ public class TimerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View timerFragmentView = inflater.inflate(R.layout.fragment_timer_2, container, false);
+
 
         ArrivalTimes arrivalTimes = new ArrivalTimes(getActivity().getApplicationContext());
         CurrentTime currentTime = new CurrentTime();
@@ -38,8 +38,9 @@ public class TimerFragment extends Fragment {
         long endTime = Math.round(arrivalTimes.timesList().get(0) * 3600 * 1000);
         startTime = endTime - startTime;
 
+        View timerFragmentView = inflater.inflate(R.layout.fragment_timer_2, container, false);
         tv = (TextView) timerFragmentView.findViewById(R.id.timer);
-        MyCounter metrolinkTimer = new MyCounter(startTime, interval);
+        metrolinkTimer = new MyCounter(startTime, interval);
         metrolinkTimer.start();
 
         return timerFragmentView;

@@ -19,6 +19,7 @@ public class CurrentTime {
         return genericCalendar;
     }
 
+    /*
     public double currentTimeDoubleAsHour() {
 
         Calendar calendar = generalCalendar();
@@ -28,6 +29,7 @@ public class CurrentTime {
                 calendar.get(Calendar.MINUTE)/60.0 +
                 calendar.get(Calendar.HOUR_OF_DAY);
     }
+    */
 
     public long currentTimeLongAsMillisecond() {
 

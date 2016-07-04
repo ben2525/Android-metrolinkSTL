@@ -1,14 +1,19 @@
 package com.benalbritton.metrolinkapp2;
 
 
+import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
+
+import layout.TimerFragment;
 
 public class UserLocationInfo extends Service implements LocationListener {
 
@@ -32,10 +37,17 @@ public class UserLocationInfo extends Service implements LocationListener {
     public double[] getUserLocation() {
         try {
             locationManager = (LocationManager) mcontext.getSystemService(LOCATION_SERVICE);
+
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                //Do what you need if enabled...
+            }else{
+                //Do what you need if not enabled...
+            }
+
             Location gpsLocation;
             gpsLocation = getLocation(locationManager.GPS_PROVIDER);
             if (gpsLocation == null) {
-                //showSettingsAlert("GPS");
+                showSettingsAlert("GPS");
             }
             if (gpsLocation != null) {
                 double latitude = gpsLocation.getLatitude();
@@ -81,9 +93,9 @@ public class UserLocationInfo extends Service implements LocationListener {
     }
 
 
-/*
+
     public void showSettingsAlert(String provider) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder();
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
         alertDialog.setTitle(provider + " SETTINGS");
 
@@ -94,7 +106,7 @@ public class UserLocationInfo extends Service implements LocationListener {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(
                                 Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        MainActivity.this.startActivity(intent);
+                        getApplicationContext().startActivity(intent);
                     }
                 });
 
@@ -106,7 +118,7 @@ public class UserLocationInfo extends Service implements LocationListener {
 
         alertDialog.show();
     }
-*/
+
 
     @Override
     public void onLocationChanged(Location location) {

@@ -6,7 +6,6 @@ public class Station {
     private String name;
     private double lat;
     private double lon;
-    private double distance;
 
     public Station(String id, String name, double lat, double lon) {
         this.id = id;
