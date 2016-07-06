@@ -1,6 +1,5 @@
 package layout;
 
-
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -12,13 +11,18 @@ import android.widget.TextView;
 import com.benalbritton.metrolinkapp2.ArrivalTimes;
 import com.benalbritton.metrolinkapp2.CurrentTime;
 import com.benalbritton.metrolinkapp2.R;
+import com.benalbritton.metrolinkapp2.Station;
+import com.benalbritton.metrolinkapp2.StationListing;
+
+import java.util.ArrayList;
 
 
 public class TimerFragment extends Fragment {
 
-    private final long interval = 1000;
-    TextView tv;
-    MyCounter metrolinkTimer = null;
+    //private final long interval = 1000;
+    private TextView tv;
+    private MyCounter metrolinkTimer = null;
+    private ArrayList<Station> stationList;
 
     public TimerFragment() {
         // Required empty public constructor
@@ -29,9 +33,12 @@ public class TimerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        final long interval = 1000;
 
+        StationListing stationListing = new StationListing();
+        stationList = stationListing.getStationsInfo(getActivity().getApplicationContext());
 
-        ArrivalTimes arrivalTimes = new ArrivalTimes(getActivity().getApplicationContext());
+        ArrivalTimes arrivalTimes = new ArrivalTimes(getActivity().getApplicationContext(), stationList);
         CurrentTime currentTime = new CurrentTime();
 
         long startTime = currentTime.currentTimeLongAsMillisecond();

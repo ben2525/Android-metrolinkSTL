@@ -14,16 +14,15 @@ import java.util.TimeZone;
 
 public class ArrivalTimes {
 
-    //private DatabaseAccess dbAccess;
     private Context context;
+    ArrayList<Station> stationList;
 
-    public ArrivalTimes(Context context) {
+    public ArrivalTimes(Context context, ArrayList<Station> stationList) {
+        this.stationList = stationList;
         this.context = context;
-
     }
 
-    //private String dayOfWeek() {
-    public String dayOfWeek() {
+    private String dayOfWeek() {
         GregorianCalendar day = new GregorianCalendar();
         String[] weekdays = new DateFormatSymbols().getWeekdays();
 
@@ -50,29 +49,10 @@ public class ArrivalTimes {
     }
 
 
-    //private String pickDBTable() {
-    public String pickDBTable() {
+    private String pickDBTable() {
 
         String today = dayOfWeek();
-        //String dbTable = dbTableMap().get(today);
-
-        //return dbTable;
         return dbTableMap().get(today);
-    }
-
-
-    private double currentTime() {
-
-        Calendar calendar = new GregorianCalendar();
-        TimeZone timeZone = TimeZone.getTimeZone("GMT-5");
-        calendar.setTimeZone(timeZone);
-        Date trialTime = new Date();
-        calendar.setTime(trialTime);
-
-        return calendar.get(Calendar.MILLISECOND)/1000.0/3600.0 +
-                calendar.get(Calendar.SECOND)/3600.0 +
-                calendar.get(Calendar.MINUTE)/60.0 +
-                calendar.get(Calendar.HOUR_OF_DAY);
     }
 
 
@@ -80,10 +60,13 @@ public class ArrivalTimes {
 
         DatabaseAccess dbAccess = DatabaseAccess.getDbInstance(context);
         ArrayList<Double> arriveTimeList = new ArrayList<>();
-        String closeStation = new StationDistances(context).closestStation();
+        double currentTime = new CurrentTime().currentTimeDoubleAsHour();
+
+        // delete below after passing station into this function
+        String closeStation = new StationDistances(context).closestStation(stationList);
 
         dbAccess.open();
-        Cursor c = dbAccess.arriveTimes(pickDBTable(), closeStation, currentTime());
+        Cursor c = dbAccess.arriveTimes(pickDBTable(), closeStation, currentTime);
         if(c != null) {
             c.moveToFirst();
             while (!c.isAfterLast()) {
@@ -97,6 +80,4 @@ public class ArrivalTimes {
 
         return arriveTimeList;
     }
-
-
 }

@@ -12,10 +12,14 @@ public class StationDistances {
     public DatabaseAccess databaseAccess;
     private UserLocationInfo userLocationInfo;
 
+    /////
+    public Context mcontext;
+
 
     protected StationDistances(Context context) {
         databaseAccess = DatabaseAccess.getDbInstance(context);
         userLocationInfo = new UserLocationInfo(context);
+        mcontext = context;
     }
 
     /*
@@ -24,16 +28,26 @@ public class StationDistances {
     }
     */
 
-    public String closestStation() {
+
+    public String closestStation(ArrayList<Station> stationList) {
         String stationID = "";
         double stationDist = 1000000;
+
+/*
+        StationListing stationListing = new StationListing();
+        stationList = stationListing.getStationsInfo(mcontext);
+*/
 
         // need to refactor - creation of station listing in separate class
         // or create 2 arraylists -
         //   One class to get arraylist of station info, then pass that to class
         // to get closest station
         // Will need to get rid of getter method getStationList() and modify the constructor
-        stationList = getStationsInfo();
+        //stationList = getStationsInfo();
+
+        //StationListing stationListing = new StationListing();
+        //stationList = stationListing.getStationsInfo(mcontext);
+
         double[] userCoordinates = userLocationInfo.getUserLocation();
 
         for(Station station : stationList) {
@@ -48,6 +62,7 @@ public class StationDistances {
         return stationID;
     }
 
+    /*
     public ArrayList<Station> getStationsInfo() {
         ArrayList<Station> allStations = new ArrayList<>();
 
@@ -63,12 +78,11 @@ public class StationDistances {
             }
             c.close();
         }
-
         databaseAccess.close();
 
         return allStations;
     }
-
+    */
 
     public double distToStation(double lat1, double lon1,
                                 double lat2, double lon2) {
