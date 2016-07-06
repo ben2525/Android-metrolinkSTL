@@ -17,7 +17,7 @@ public class ArrivalTimes {
     private Context context;
     ArrayList<Station> stationList;
 
-    public ArrivalTimes(Context context, ArrayList<Station> stationList) {
+    public ArrivalTimes(Context context) {
         this.stationList = stationList;
         this.context = context;
     }
@@ -63,7 +63,7 @@ public class ArrivalTimes {
         double currentTime = new CurrentTime().currentTimeDoubleAsHour();
 
         // delete below after passing station into this function
-        String closeStation = new StationDistances(context).closestStation(stationList);
+        String closeStation = new StationDistances(context).closestStation();
 
         dbAccess.open();
         Cursor c = dbAccess.arriveTimes(pickDBTable(), closeStation, currentTime);

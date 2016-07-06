@@ -29,14 +29,14 @@ public class StationDistances {
     */
 
 
-    public String closestStation(ArrayList<Station> stationList) {
+    public String closestStation() {
         String stationID = "";
         double stationDist = 1000000;
 
-/*
+
         StationListing stationListing = new StationListing();
         stationList = stationListing.getStationsInfo(mcontext);
-*/
+
 
         // need to refactor - creation of station listing in separate class
         // or create 2 arraylists -

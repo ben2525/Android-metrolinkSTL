@@ -19,7 +19,6 @@ import java.util.ArrayList;
 
 public class TimerFragment extends Fragment {
 
-    //private final long interval = 1000;
     private TextView tv;
     private MyCounter metrolinkTimer = null;
     private ArrayList<Station> stationList;
@@ -38,7 +37,7 @@ public class TimerFragment extends Fragment {
         StationListing stationListing = new StationListing();
         stationList = stationListing.getStationsInfo(getActivity().getApplicationContext());
 
-        ArrivalTimes arrivalTimes = new ArrivalTimes(getActivity().getApplicationContext(), stationList);
+        ArrivalTimes arrivalTimes = new ArrivalTimes(getActivity().getApplicationContext());
         CurrentTime currentTime = new CurrentTime();
 
         long startTime = currentTime.currentTimeLongAsMillisecond();
