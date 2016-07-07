@@ -18,7 +18,6 @@ public class ArrivalTimes {
     ArrayList<Station> stationList;
 
     public ArrivalTimes(Context context) {
-        this.stationList = stationList;
         this.context = context;
     }
 
@@ -60,12 +59,22 @@ public class ArrivalTimes {
 
         DatabaseAccess dbAccess = DatabaseAccess.getDbInstance(context);
         ArrayList<Double> arriveTimeList = new ArrayList<>();
+
         double currentTime = new CurrentTime().currentTimeDoubleAsHour();
 
         // delete below after passing station into this function
         String closeStation = new StationDistances(context).closestStation();
 
+        /*
+            Bring in list of stations from StationDistances.java,  getStationsInfo()
+            Sort list to get closest station
+            Maybe do in separate function
+         */
+
+
         dbAccess.open();
+
+        // Use info from above to replace   closeStation   argument
         Cursor c = dbAccess.arriveTimes(pickDBTable(), closeStation, currentTime);
         if(c != null) {
             c.moveToFirst();

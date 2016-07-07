@@ -11,48 +11,47 @@ public class StationDistances {
     private ArrayList<Station> stationList;
     public DatabaseAccess databaseAccess;
     private UserLocationInfo userLocationInfo;
+    private double[] userCoordinates;
 
     /////
     public Context mcontext;
 
 
     protected StationDistances(Context context) {
+
+        // Below 2 can get context from mcontext
         databaseAccess = DatabaseAccess.getDbInstance(context);
         userLocationInfo = new UserLocationInfo(context);
+
+
         mcontext = context;
     }
 
-    /*
-    public ArrayList<Station> getStationList() {
-        return stationList;
-    }
-    */
 
-
+    // NOTE : This whole function should be obsolete
     public String closestStation() {
         String stationID = "";
         double stationDist = 1000000;
 
-
-        StationListing stationListing = new StationListing();
-        stationList = stationListing.getStationsInfo(mcontext);
-
-
-        // need to refactor - creation of station listing in separate class
-        // or create 2 arraylists -
-        //   One class to get arraylist of station info, then pass that to class
-        // to get closest station
-        // Will need to get rid of getter method getStationList() and modify the constructor
-        //stationList = getStationsInfo();
-
+        // Get list of stations from StationListing
         //StationListing stationListing = new StationListing();
         //stationList = stationListing.getStationsInfo(mcontext);
 
-        double[] userCoordinates = userLocationInfo.getUserLocation();
+        stationList = getStationsInfo();
 
+        // Get users location
+        userCoordinates = userLocationInfo.getUserLocation();
+
+        // Get and store distance from user to each station  <- DONE!
+        /* Currently returns id of closest station.  May modify
+           to only get distances to use later.
+           May want to rename function to reflect that change when done.
+         */
         for(Station station : stationList) {
             double distance = distToStation(userCoordinates[0], userCoordinates[1],
                     station.getLat(), station.getLon());
+
+
             if (distance < stationDist) {
                 stationDist = distance;
                 stationID = station.getId();
@@ -62,9 +61,10 @@ public class StationDistances {
         return stationID;
     }
 
-    /*
+
     public ArrayList<Station> getStationsInfo() {
         ArrayList<Station> allStations = new ArrayList<>();
+        double statDist;
 
         databaseAccess.open();
         Cursor c = databaseAccess.getStations();
@@ -73,6 +73,11 @@ public class StationDistances {
             while (!c.isAfterLast()) {
                 Station station = new Station(c.getString(0), c.getString(1),
                         c.getDouble(2), c.getDouble(3));
+                userCoordinates = userLocationInfo.getUserLocation();
+                statDist = distToStation(c.getDouble(2), c.getDouble(3),
+                                userCoordinates[0], userCoordinates[1]);
+                station.setDistToUser(statDist);
+
                 allStations.add(station);
                 c.moveToNext();
             }
@@ -82,7 +87,7 @@ public class StationDistances {
 
         return allStations;
     }
-    */
+
 
     public double distToStation(double lat1, double lon1,
                                 double lat2, double lon2) {

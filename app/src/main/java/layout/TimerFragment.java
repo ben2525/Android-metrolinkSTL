@@ -11,17 +11,15 @@ import android.widget.TextView;
 import com.benalbritton.metrolinkapp2.ArrivalTimes;
 import com.benalbritton.metrolinkapp2.CurrentTime;
 import com.benalbritton.metrolinkapp2.R;
-import com.benalbritton.metrolinkapp2.Station;
-import com.benalbritton.metrolinkapp2.StationListing;
-
-import java.util.ArrayList;
 
 
 public class TimerFragment extends Fragment {
 
     private TextView tv;
     private MyCounter metrolinkTimer = null;
-    private ArrayList<Station> stationList;
+
+    private long startTime;
+    private final long INTERVAL = 1000;
 
     public TimerFragment() {
         // Required empty public constructor
@@ -32,22 +30,23 @@ public class TimerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final long interval = 1000;
-
-        StationListing stationListing = new StationListing();
-        stationList = stationListing.getStationsInfo(getActivity().getApplicationContext());
+        CurrentTime currentTime = new CurrentTime();
+        startTime = currentTime.currentTimeLongAsMillisecond();
 
         ArrivalTimes arrivalTimes = new ArrivalTimes(getActivity().getApplicationContext());
-        CurrentTime currentTime = new CurrentTime();
-
-        long startTime = currentTime.currentTimeLongAsMillisecond();
         long endTime = Math.round(arrivalTimes.timesList().get(0) * 3600 * 1000);
+
         startTime = endTime - startTime;
 
         View timerFragmentView = inflater.inflate(R.layout.fragment_timer_2, container, false);
         tv = (TextView) timerFragmentView.findViewById(R.id.timer);
-        metrolinkTimer = new MyCounter(startTime, interval);
-        metrolinkTimer.start();
+
+        //metrolinkTimer = new MyCounter(5000, interval);
+        //metrolinkTimer = new MyCounter(startTime, interval);
+
+        startTimer();
+        //metrolinkTimer.start();
+
 
         return timerFragmentView;
     }
@@ -60,7 +59,11 @@ public class TimerFragment extends Fragment {
         }
         @Override
         public void onFinish() {
+
+            // Maybe eliminate 2 lower lines
             cancelTimer();
+            metrolinkTimer = null;
+            startTimer();
         }
         @Override
         public void onTick(long millisUntilFinished) {
@@ -68,9 +71,20 @@ public class TimerFragment extends Fragment {
                     ((millisUntilFinished / 1000) % 3600) / 60,
                     (((millisUntilFinished / 1000) % 3600) % 60)));
         }
+
+
+
     }
 
-    void cancelTimer() {
+    public void startTimer() {
+        if(metrolinkTimer == null) {
+            /////////////////////////////////////////////////////////
+            metrolinkTimer = new MyCounter(startTime, INTERVAL);
+        }
+        metrolinkTimer.start();
+    }
+
+    public void cancelTimer() {
         if(metrolinkTimer != null)
             metrolinkTimer.cancel();
     }

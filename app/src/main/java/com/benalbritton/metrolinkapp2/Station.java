@@ -6,6 +6,7 @@ public class Station {
     private String name;
     private double lat;
     private double lon;
+    private double distToUser;
 
     public Station(String id, String name, double lat, double lon) {
         this.id = id;
@@ -28,5 +29,9 @@ public class Station {
 
     public String getId() {
         return id;
+    }
+
+    public void setDistToUser (double dist) {
+        distToUser = dist;
     }
 }
