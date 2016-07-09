@@ -12,13 +12,21 @@ import com.benalbritton.metrolinkapp2.ArrivalTimes;
 import com.benalbritton.metrolinkapp2.CurrentTime;
 import com.benalbritton.metrolinkapp2.R;
 
+import java.util.ArrayList;
+
 
 public class TimerFragment extends Fragment {
 
     private TextView tv;
     private MyCounter metrolinkTimer = null;
 
+    private CurrentTime currentTime;
+    private ArrivalTimes arrivalTimes;
+    private ArrayList<Double> arriveTimesList;
+
     private long startTime;
+    private long endTime;
+    private int scheduleIterator = 0;
     private final long INTERVAL = 1000;
 
     public TimerFragment() {
@@ -30,13 +38,17 @@ public class TimerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        CurrentTime currentTime = new CurrentTime();
-        startTime = currentTime.currentTimeLongAsMillisecond();
+        currentTime = new CurrentTime();
+        //startTime = currentTime.currentTimeLongAsMillisecond();
 
-        ArrivalTimes arrivalTimes = new ArrivalTimes(getActivity().getApplicationContext());
-        long endTime = Math.round(arrivalTimes.timesList().get(0) * 3600 * 1000);
+        arrivalTimes = new ArrivalTimes(getActivity().getApplicationContext());
+        arriveTimesList = arrivalTimes.timesList();
 
-        startTime = endTime - startTime;
+
+
+        //endTime = Math.round(arrivalTimes.timesList().get(0) * 3600 * 1000);
+
+        //startTime = endTime - startTime;
 
         View timerFragmentView = inflater.inflate(R.layout.fragment_timer_2, container, false);
         tv = (TextView) timerFragmentView.findViewById(R.id.timer);
@@ -60,8 +72,13 @@ public class TimerFragment extends Fragment {
         @Override
         public void onFinish() {
 
+            startTime = currentTime.currentTimeLongAsMillisecond();
+            endTime = Math.round(arriveTimesList.get(scheduleIterator) * 3600 * 1000);
+            startTime = endTime - startTime;
+            scheduleIterator++;
+
             // Maybe eliminate 2 lower lines
-            cancelTimer();
+            //cancelTimer();
             metrolinkTimer = null;
             startTimer();
         }
@@ -71,9 +88,6 @@ public class TimerFragment extends Fragment {
                     ((millisUntilFinished / 1000) % 3600) / 60,
                     (((millisUntilFinished / 1000) % 3600) % 60)));
         }
-
-
-
     }
 
     public void startTimer() {
@@ -90,8 +104,20 @@ public class TimerFragment extends Fragment {
     }
 
     public void onDestroyView() {
-        super.onDestroy();
         cancelTimer();
+        super.onDestroy();
+
+    }
+
+    public void onPause() {
+        cancelTimer();
+        super.onPause();
+
+    }
+
+    public void onResume() {
+        super.onResume();
+        //startTimer();
     }
 
 

@@ -55,6 +55,15 @@ public class ArrivalTimes {
     }
 
 
+    private double timeAsHourDouble(String s) {
+        String[] hourMin = s.split(":");
+        int hour = Integer.parseInt(hourMin[0]);
+        int mins = Integer.parseInt(hourMin[1]);
+        int hoursInSeconds = hour * 3600;
+        return hoursInSeconds + mins;
+    }
+
+
     public ArrayList<Double> timesList() {
 
         DatabaseAccess dbAccess = DatabaseAccess.getDbInstance(context);
@@ -63,7 +72,9 @@ public class ArrivalTimes {
         double currentTime = new CurrentTime().currentTimeDoubleAsHour();
 
         // delete below after passing station into this function
-        String closeStation = new StationDistances(context).closestStation();
+        //String closeStation = new StationDistances(context).closestStation();
+
+        String closeStation = new StationDistances(context).getStationsInfo().get(0).getId();
 
         /*
             Bring in list of stations from StationDistances.java,  getStationsInfo()
@@ -76,9 +87,13 @@ public class ArrivalTimes {
 
         // Use info from above to replace   closeStation   argument
         Cursor c = dbAccess.arriveTimes(pickDBTable(), closeStation, currentTime);
+
         if(c != null) {
             c.moveToFirst();
             while (!c.isAfterLast()) {
+
+
+
                 Double time = Double.valueOf(c.getString(0));
                 arriveTimeList.add(time);
                 c.moveToNext();

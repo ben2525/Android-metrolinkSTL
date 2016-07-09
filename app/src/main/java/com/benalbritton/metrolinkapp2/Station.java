@@ -1,6 +1,8 @@
 package com.benalbritton.metrolinkapp2;
 
 
+import java.util.Comparator;
+
 public class Station {
     private String id;
     private String name;
@@ -31,7 +33,21 @@ public class Station {
         return id;
     }
 
+    public double getDistToUser() {
+        return distToUser;
+    }
+
     public void setDistToUser (double dist) {
         distToUser = dist;
     }
+
+    public static Comparator<Station> DistanceComparator = new Comparator<Station>() {
+        @Override
+        public int compare(Station lhs, Station rhs) {
+            if (lhs.distToUser < rhs.distToUser) return -1;
+            if (lhs.distToUser > rhs.distToUser) return 1;
+            return 0;
+        }
+    };
+
 }

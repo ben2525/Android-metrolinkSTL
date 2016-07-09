@@ -46,7 +46,6 @@ public class UserLocationInfo extends Service implements LocationListener {
 
             Location gpsLocation;
             gpsLocation = getLocation(LocationManager.GPS_PROVIDER);
-            //gpsLocation = getLocation(locationManager.GPS_PROVIDER);
             if (gpsLocation == null) {
                 showSettingsAlert("GPS");
             }

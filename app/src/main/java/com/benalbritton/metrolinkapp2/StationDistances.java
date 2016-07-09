@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class StationDistances {
 
@@ -20,8 +22,7 @@ public class StationDistances {
     protected StationDistances(Context context) {
 
         // Below 2 can get context from mcontext
-        databaseAccess = DatabaseAccess.getDbInstance(context);
-        userLocationInfo = new UserLocationInfo(context);
+
 
 
         mcontext = context;
@@ -66,6 +67,9 @@ public class StationDistances {
         ArrayList<Station> allStations = new ArrayList<>();
         double statDist;
 
+        databaseAccess = DatabaseAccess.getDbInstance(mcontext);
+        userLocationInfo = new UserLocationInfo(mcontext);
+
         databaseAccess.open();
         Cursor c = databaseAccess.getStations();
         if(c != null) {
@@ -73,6 +77,7 @@ public class StationDistances {
             while (!c.isAfterLast()) {
                 Station station = new Station(c.getString(0), c.getString(1),
                         c.getDouble(2), c.getDouble(3));
+
                 userCoordinates = userLocationInfo.getUserLocation();
                 statDist = distToStation(c.getDouble(2), c.getDouble(3),
                                 userCoordinates[0], userCoordinates[1]);
@@ -85,9 +90,10 @@ public class StationDistances {
         }
         databaseAccess.close();
 
+        Collections.sort(allStations, Station.DistanceComparator);
+
         return allStations;
     }
-
 
     public double distToStation(double lat1, double lon1,
                                 double lat2, double lon2) {
