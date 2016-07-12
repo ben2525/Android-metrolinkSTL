@@ -39,26 +39,12 @@ public class TimerFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         currentTime = new CurrentTime();
-        //startTime = currentTime.currentTimeLongAsMillisecond();
-
         arrivalTimes = new ArrivalTimes(getActivity().getApplicationContext());
         arriveTimesList = arrivalTimes.timesList();
 
-
-
-        //endTime = Math.round(arrivalTimes.timesList().get(0) * 3600 * 1000);
-
-        //startTime = endTime - startTime;
-
         View timerFragmentView = inflater.inflate(R.layout.fragment_timer_2, container, false);
         tv = (TextView) timerFragmentView.findViewById(R.id.timer);
-
-        //metrolinkTimer = new MyCounter(5000, interval);
-        //metrolinkTimer = new MyCounter(startTime, interval);
-
         startTimer();
-        //metrolinkTimer.start();
-
 
         return timerFragmentView;
     }
@@ -71,14 +57,7 @@ public class TimerFragment extends Fragment {
         }
         @Override
         public void onFinish() {
-
-            startTime = currentTime.currentTimeLongAsMillisecond();
-            endTime = Math.round(arriveTimesList.get(scheduleIterator) * 3600 * 1000);
-            startTime = endTime - startTime;
             scheduleIterator++;
-
-            // Maybe eliminate 2 lower lines
-            //cancelTimer();
             metrolinkTimer = null;
             startTimer();
         }
@@ -90,9 +69,13 @@ public class TimerFragment extends Fragment {
         }
     }
 
+    
+
     public void startTimer() {
+        startTime = currentTime.currentTimeLongAsMillisecond();
+        endTime = Math.round(arriveTimesList.get(scheduleIterator) * 3600 * 1000);
+        startTime = endTime - startTime;
         if(metrolinkTimer == null) {
-            /////////////////////////////////////////////////////////
             metrolinkTimer = new MyCounter(startTime, INTERVAL);
         }
         metrolinkTimer.start();
@@ -116,8 +99,9 @@ public class TimerFragment extends Fragment {
     }
 
     public void onResume() {
+        metrolinkTimer = null;
         super.onResume();
-        //startTimer();
+        startTimer();
     }
 
 

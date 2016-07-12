@@ -33,9 +33,11 @@ public class Station {
         return id;
     }
 
+    /*
     public double getDistToUser() {
         return distToUser;
     }
+    */
 
     public void setDistToUser (double dist) {
         distToUser = dist;

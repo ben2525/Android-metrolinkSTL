@@ -9,7 +9,9 @@
         android:id="@+id/timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="25dp"
+        android:textSize="50dp"
         android:textStyle="bold"/>
+
+
 
     </LinearLayout>

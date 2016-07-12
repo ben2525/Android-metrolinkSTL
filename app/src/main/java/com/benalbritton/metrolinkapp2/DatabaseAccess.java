@@ -42,12 +42,16 @@ public class DatabaseAccess {
     }
 
     public Cursor arriveTimes(String scheduleTable, String closestStation, double currentTime) {
-        String sqlTimes = "SELECT cast(" + scheduleTable + ".arrival_time as REAL) " +
+        String sqlTimes = "SELECT " + scheduleTable + ".arrival_time " +
                 "FROM " + scheduleTable + " JOIN stations on "
                 + scheduleTable + ".stop_id = stations.stop_id WHERE "
                 + scheduleTable + ".stop_id = " + closestStation
-                + " AND cast(" + scheduleTable + ".arrival_time as REAL) > " + currentTime +
+                + " AND " + scheduleTable + ".arrival_time  > " + currentTime +
                 ";";
+
+        //////////////////////////////
+        //  "SELECT cast(" + scheduleTable + ".arrival_time as REAL) " +
+
 
         return db.rawQuery(sqlTimes, null);
     }
