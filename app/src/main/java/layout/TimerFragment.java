@@ -69,8 +69,6 @@ public class TimerFragment extends Fragment {
         }
     }
 
-    
-
     public void startTimer() {
         startTime = currentTime.currentTimeLongAsMillisecond();
         endTime = Math.round(arriveTimesList.get(scheduleIterator) * 3600 * 1000);
