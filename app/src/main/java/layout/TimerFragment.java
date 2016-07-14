@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.benalbritton.metrolinkapp2.ArrivalTimes;
@@ -22,7 +24,7 @@ public class TimerFragment extends Fragment {
 
     private CurrentTime currentTime;
     private ArrivalTimes arrivalTimes;
-    private ArrayList<Double> arriveTimesList;
+    private ArrayList<String> arriveTimesList;
 
     private long startTime;
     private long endTime;
@@ -44,10 +46,25 @@ public class TimerFragment extends Fragment {
 
         View timerFragmentView = inflater.inflate(R.layout.fragment_timer_2, container, false);
         tv = (TextView) timerFragmentView.findViewById(R.id.timer);
+
+        ArrayAdapter timesAdapter =
+                new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, arriveTimesList);
+        ListView listView = (ListView)timerFragmentView.findViewById(R.id.timesListView);
+        listView.setAdapter(timesAdapter);
+
         startTimer();
 
         return timerFragmentView;
     }
+/*
+    private void populateTimesList() {
+        ArrayAdapter<String> timesAdapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
+        ListView listView = (ListView) findViewById(R.id.lvItems);
+        listView.setAdapter(timesAdapter);
+
+    }
+*/
 
 
     class MyCounter extends CountDownTimer {
@@ -57,6 +74,7 @@ public class TimerFragment extends Fragment {
         }
         @Override
         public void onFinish() {
+            metrolinkTimer.cancel();
             scheduleIterator++;
             metrolinkTimer = null;
             startTimer();
@@ -69,27 +87,37 @@ public class TimerFragment extends Fragment {
         }
     }
 
+
+    private double timeAsHourDouble(String s) {
+        String[] hourMin = s.split(":");
+        double hours = Double.parseDouble(hourMin[0]);
+        double minutesAsHour = Double.parseDouble(hourMin[1]) / 60.0;
+
+        return hours + minutesAsHour;
+    }
+
+
     public void startTimer() {
         startTime = currentTime.currentTimeLongAsMillisecond();
-        endTime = Math.round(arriveTimesList.get(scheduleIterator) * 3600 * 1000);
+        double endTimeAsDouble = timeAsHourDouble(arriveTimesList.get(scheduleIterator));
+        endTime = Math.round(endTimeAsDouble * 3600 * 1000);
         startTime = endTime - startTime;
-        if(metrolinkTimer == null) {
+
             metrolinkTimer = new MyCounter(startTime, INTERVAL);
-        }
+
         metrolinkTimer.start();
     }
 
     public void cancelTimer() {
-        if(metrolinkTimer != null)
             metrolinkTimer.cancel();
     }
-
+/*
     public void onDestroyView() {
         cancelTimer();
         super.onDestroy();
 
     }
-
+*/
     public void onPause() {
         cancelTimer();
         super.onPause();
@@ -97,7 +125,7 @@ public class TimerFragment extends Fragment {
     }
 
     public void onResume() {
-        metrolinkTimer = null;
+        //metrolinkTimer = null;
         super.onResume();
         startTimer();
     }

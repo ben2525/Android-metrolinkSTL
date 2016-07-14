@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.Date;
+
 public class DatabaseAccess {
 
     private SQLiteOpenHelper sqLiteOpenHelper;
@@ -48,10 +50,6 @@ public class DatabaseAccess {
                 + scheduleTable + ".stop_id = " + closestStation
                 + " AND " + scheduleTable + ".arrival_time  > " + currentTime +
                 ";";
-
-        //////////////////////////////
-        //  "SELECT cast(" + scheduleTable + ".arrival_time as REAL) " +
-
 
         return db.rawQuery(sqlTimes, null);
     }

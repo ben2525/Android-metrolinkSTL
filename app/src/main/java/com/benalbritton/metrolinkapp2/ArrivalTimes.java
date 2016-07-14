@@ -5,8 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 
 import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
@@ -61,14 +63,15 @@ public class ArrivalTimes {
     }
 
 
-    public ArrayList<Double> timesList() {
+    public ArrayList<ArriveTimeDetail> timesList() {
 
         String dbTable = dbTableMap().get(dayOfWeek());
 
         DatabaseAccess dbAccess = DatabaseAccess.getDbInstance(context);
-        ArrayList<Double> arriveTimeList = new ArrayList<>();
+        ArrayList<ArriveTimeDetail> arriveTimeList = new ArrayList<>();
 
         double currentTime = new CurrentTime().currentTimeDoubleAsHour();
+
         String closeStation = new StationDistances(context).getStationsInfo().get(0).getId();
 
         dbAccess.open();
@@ -76,8 +79,10 @@ public class ArrivalTimes {
         if(c != null) {
             c.moveToFirst();
             while (!c.isAfterLast()) {
-                Double time = timeAsHourDouble(c.getString(0));
-                arriveTimeList.add(time);
+                ArriveTimeDetail arriveTimeDetail = new ArriveTimeDetail();
+
+                //Double time = timeAsHourDouble(c.getString(0));
+                arriveTimeList.add(c.getString(0));
                 c.moveToNext();
             }
             c.close();
