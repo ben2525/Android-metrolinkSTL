@@ -18,15 +18,11 @@ import layout.TimerFragment;
 public class UserLocationInfo extends Service implements LocationListener {
 
     private Context mcontext;
-    public double[] coordinates;
-
 
     public  UserLocationInfo(Context mcontext) {
         this.mcontext = mcontext;
-        //coordinates = getUserLocation();
     }
 
-    /////////////
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
@@ -45,17 +41,22 @@ public class UserLocationInfo extends Service implements LocationListener {
             }
 
             Location gpsLocation;
-            gpsLocation = getLocation(locationManager.GPS_PROVIDER);
+            gpsLocation = getLocation(LocationManager.GPS_PROVIDER);
             if (gpsLocation == null) {
                 showSettingsAlert("GPS");
             }
             if (gpsLocation != null) {
                 double latitude = gpsLocation.getLatitude();
                 double longitude = gpsLocation.getLongitude();
-                //double[] userLocation = {latitude, longitude};
                 double[] userLocation = {0, 0};
                 userLocation[0] = latitude;
                 userLocation[1] = longitude;
+                try {
+                    locationManager.removeUpdates(this);
+                } catch (SecurityException ex) {
+                    ex.printStackTrace();
+                }
+
                 return userLocation;
             }
         } catch (NullPointerException ex) {
@@ -72,11 +73,13 @@ public class UserLocationInfo extends Service implements LocationListener {
                 locationManager.requestLocationUpdates(provider, 0, 0, this);
                 if (locationManager != null) {
                     location = locationManager.getLastKnownLocation(provider);
+                    /*
                     try {
                         locationManager.removeUpdates(this);
                     } catch (SecurityException ex) {
                         ex.printStackTrace();
                     }
+                    */
                     return location;
                 }
             }

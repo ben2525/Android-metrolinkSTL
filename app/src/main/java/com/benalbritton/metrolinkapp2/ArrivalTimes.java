@@ -4,26 +4,22 @@ package com.benalbritton.metrolinkapp2;
 import android.content.Context;
 import android.database.Cursor;
 
+import java.sql.Time;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.TimeZone;
 
 public class ArrivalTimes {
 
-    //private DatabaseAccess dbAccess;
     private Context context;
 
     public ArrivalTimes(Context context) {
         this.context = context;
-
     }
 
-    //private String dayOfWeek() {
-    public String dayOfWeek() {
+    private String dayOfWeek() {
         GregorianCalendar day = new GregorianCalendar();
         String[] weekdays = new DateFormatSymbols().getWeekdays();
 
@@ -50,45 +46,37 @@ public class ArrivalTimes {
     }
 
 
-    //private String pickDBTable() {
-    public String pickDBTable() {
+    private double timeAsHourDouble(String s) {
+        String[] hourMin = s.split(":");
+        double hours = Double.parseDouble(hourMin[0]);
+        double minutesAsHour = Double.parseDouble(hourMin[1]) / 60.0;
 
-        String today = dayOfWeek();
-        //String dbTable = dbTableMap().get(today);
-
-        //return dbTable;
-        return dbTableMap().get(today);
+        return hours + minutesAsHour;
     }
 
 
-    private double currentTime() {
+    public ArrayList<ArriveTimeDetail> timesList() {
 
-        Calendar calendar = new GregorianCalendar();
-        TimeZone timeZone = TimeZone.getTimeZone("GMT-5");
-        calendar.setTimeZone(timeZone);
-        Date trialTime = new Date();
-        calendar.setTime(trialTime);
-
-        return calendar.get(Calendar.MILLISECOND)/1000.0/3600.0 +
-                calendar.get(Calendar.SECOND)/3600.0 +
-                calendar.get(Calendar.MINUTE)/60.0 +
-                calendar.get(Calendar.HOUR_OF_DAY);
-    }
-
-
-    public ArrayList<Double> timesList() {
+        String dbTable = dbTableMap().get(dayOfWeek());
 
         DatabaseAccess dbAccess = DatabaseAccess.getDbInstance(context);
-        ArrayList<Double> arriveTimeList = new ArrayList<>();
-        String closeStation = new StationDistances(context).closestStation();
+        ArrayList<ArriveTimeDetail> arriveTimeList = new ArrayList<>();
+
+        String currentTime = new CurrentTime().timeAsString();
+        //Time currentTime = new CurrentTime().timeAsString();
+
+        String closeStation = new StationDistances(context).getStationsInfo().get(0).getId();
 
         dbAccess.open();
-        Cursor c = dbAccess.arriveTimes(pickDBTable(), closeStation, currentTime());
+        Cursor c = dbAccess.arriveTimes(dbTable, closeStation, currentTime);
         if(c != null) {
             c.moveToFirst();
             while (!c.isAfterLast()) {
-                Double time = Double.valueOf(c.getString(0));
-                arriveTimeList.add(time);
+                ArriveTimeDetail arriveTimeDetail = new ArriveTimeDetail();
+                arriveTimeDetail.setTimeAsDouble(timeAsHourDouble(c.getString(0)));
+                arriveTimeDetail.setTimeAsString(c.getString(0));
+                arriveTimeDetail.setRouteColorDirection(c.getString(1));
+                arriveTimeList.add(arriveTimeDetail);
                 c.moveToNext();
             }
             c.close();
@@ -97,6 +85,4 @@ public class ArrivalTimes {
 
         return arriveTimeList;
     }
-
-
 }

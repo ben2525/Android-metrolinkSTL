@@ -1,24 +1,36 @@
 package layout;
 
-
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.benalbritton.metrolinkapp2.ArrivalTimes;
+import com.benalbritton.metrolinkapp2.ArriveTimeDetail;
 import com.benalbritton.metrolinkapp2.CurrentTime;
 import com.benalbritton.metrolinkapp2.R;
+
+import java.util.ArrayList;
 
 
 public class TimerFragment extends Fragment {
 
-    private final long interval = 1000;
-    TextView tv;
-    MyCounter metrolinkTimer = null;
+    private TextView tv;
+    private MyCounter metrolinkTimer = null;
+
+    private CurrentTime currentTime;
+    private ArrivalTimes arrivalTimes;
+    private ArrayList<ArriveTimeDetail> arriveTimesList;
+
+    private long startTime;
+    private long endTime;
+    private int scheduleIterator = 0;
+    private final long INTERVAL = 1000;
 
     public TimerFragment() {
         // Required empty public constructor
@@ -29,22 +41,31 @@ public class TimerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-
-        ArrivalTimes arrivalTimes = new ArrivalTimes(getActivity().getApplicationContext());
-        CurrentTime currentTime = new CurrentTime();
-
-        long startTime = currentTime.currentTimeLongAsMillisecond();
-        long endTime = Math.round(arrivalTimes.timesList().get(0) * 3600 * 1000);
-        startTime = endTime - startTime;
+        currentTime = new CurrentTime();
+        arrivalTimes = new ArrivalTimes(getActivity().getApplicationContext());
+        arriveTimesList = arrivalTimes.timesList();
 
         View timerFragmentView = inflater.inflate(R.layout.fragment_timer_2, container, false);
         tv = (TextView) timerFragmentView.findViewById(R.id.timer);
-        metrolinkTimer = new MyCounter(startTime, interval);
-        metrolinkTimer.start();
+
+        ArrayAdapter timesAdapter =
+                new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, arriveTimesList);
+        ListView listView = (ListView)timerFragmentView.findViewById(R.id.timesListView);
+        listView.setAdapter(timesAdapter);
+
+        startTimer();
 
         return timerFragmentView;
     }
+/*
+    private void populateTimesList() {
+        ArrayAdapter<String> timesAdapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
+        ListView listView = (ListView) findViewById(R.id.lvItems);
+        listView.setAdapter(timesAdapter);
+
+    }
+*/
 
 
     class MyCounter extends CountDownTimer {
@@ -54,7 +75,10 @@ public class TimerFragment extends Fragment {
         }
         @Override
         public void onFinish() {
-            cancelTimer();
+            metrolinkTimer.cancel();
+            scheduleIterator++;
+            metrolinkTimer = null;
+            startTimer();
         }
         @Override
         public void onTick(long millisUntilFinished) {
@@ -64,14 +88,34 @@ public class TimerFragment extends Fragment {
         }
     }
 
-    void cancelTimer() {
-        if(metrolinkTimer != null)
-            metrolinkTimer.cancel();
+
+    public void startTimer() {
+        startTime = currentTime.currentTimeLongAsMillisecond();
+        double endTimeAsDouble = arriveTimesList.get(scheduleIterator).getTimeAsDouble();
+        endTime = Math.round(endTimeAsDouble * 3600 * 1000);
+        startTime = endTime - startTime;
+        if(startTime > 0) {
+            metrolinkTimer = new MyCounter(startTime, INTERVAL);
+            metrolinkTimer.start();
+        }
+        else {
+            scheduleIterator++;
+            startTimer();
+        }
     }
 
-    public void onDestroyView() {
-        super.onDestroy();
+    public void cancelTimer() {
+        metrolinkTimer.cancel();
+    }
+
+    public void onPause() {
         cancelTimer();
+        super.onPause();
+    }
+
+    public void onResume() {
+        super.onResume();
+        startTimer();
     }
 
 
