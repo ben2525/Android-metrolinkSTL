@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.util.Date;
-
 public class DatabaseAccess {
 
     private SQLiteOpenHelper sqLiteOpenHelper;
@@ -43,15 +41,16 @@ public class DatabaseAccess {
         return db.rawQuery(sqlStations, null);
     }
 
-    public Cursor arriveTimes(String scheduleTable, String closestStation, double currentTime) {
-        String sqlTimes = "SELECT " + scheduleTable + ".arrival_time " +
+    public Cursor arriveTimes(String scheduleTable, String closestStation, String currentTime) {
+        String sqlTimes = "SELECT " + scheduleTable + ".arrival_time, " +
+                scheduleTable + ".route_color_direction " +
                 "FROM " + scheduleTable + " JOIN stations on "
                 + scheduleTable + ".stop_id = stations.stop_id WHERE "
                 + scheduleTable + ".stop_id = " + closestStation
-                + " AND " + scheduleTable + ".arrival_time  > " + currentTime +
-                ";";
+                + " AND " + scheduleTable + ".arrival_time  > Datetime('"+currentTime + "');";
 
-        return db.rawQuery(sqlTimes, null);
+        Cursor c = db.rawQuery(sqlTimes, null);
+        return c;
     }
 
 }

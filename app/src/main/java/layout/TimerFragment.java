@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.benalbritton.metrolinkapp2.ArrivalTimes;
+import com.benalbritton.metrolinkapp2.ArriveTimeDetail;
 import com.benalbritton.metrolinkapp2.CurrentTime;
 import com.benalbritton.metrolinkapp2.R;
 
@@ -24,7 +25,7 @@ public class TimerFragment extends Fragment {
 
     private CurrentTime currentTime;
     private ArrivalTimes arrivalTimes;
-    private ArrayList<String> arriveTimesList;
+    private ArrayList<ArriveTimeDetail> arriveTimesList;
 
     private long startTime;
     private long endTime;
@@ -88,44 +89,31 @@ public class TimerFragment extends Fragment {
     }
 
 
-    private double timeAsHourDouble(String s) {
-        String[] hourMin = s.split(":");
-        double hours = Double.parseDouble(hourMin[0]);
-        double minutesAsHour = Double.parseDouble(hourMin[1]) / 60.0;
-
-        return hours + minutesAsHour;
-    }
-
-
     public void startTimer() {
         startTime = currentTime.currentTimeLongAsMillisecond();
-        double endTimeAsDouble = timeAsHourDouble(arriveTimesList.get(scheduleIterator));
+        double endTimeAsDouble = arriveTimesList.get(scheduleIterator).getTimeAsDouble();
         endTime = Math.round(endTimeAsDouble * 3600 * 1000);
         startTime = endTime - startTime;
-
+        if(startTime > 0) {
             metrolinkTimer = new MyCounter(startTime, INTERVAL);
-
-        metrolinkTimer.start();
+            metrolinkTimer.start();
+        }
+        else {
+            scheduleIterator++;
+            startTimer();
+        }
     }
 
     public void cancelTimer() {
-            metrolinkTimer.cancel();
+        metrolinkTimer.cancel();
     }
-/*
-    public void onDestroyView() {
-        cancelTimer();
-        super.onDestroy();
 
-    }
-*/
     public void onPause() {
         cancelTimer();
         super.onPause();
-
     }
 
     public void onResume() {
-        //metrolinkTimer = null;
         super.onResume();
         startTimer();
     }

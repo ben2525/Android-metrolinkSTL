@@ -15,51 +15,11 @@ public class StationDistances {
     private UserLocationInfo userLocationInfo;
     private double[] userCoordinates;
 
-    /////
     public Context mcontext;
 
 
     protected StationDistances(Context context) {
-
-        // Below 2 can get context from mcontext
-
-
-
         mcontext = context;
-    }
-
-
-    // NOTE : This whole function should be obsolete
-    public String closestStation() {
-        String stationID = "";
-        double stationDist = 1000000;
-
-        // Get list of stations from StationListing
-        //StationListing stationListing = new StationListing();
-        //stationList = stationListing.getStationsInfo(mcontext);
-
-        stationList = getStationsInfo();
-
-        // Get users location
-        userCoordinates = userLocationInfo.getUserLocation();
-
-        // Get and store distance from user to each station  <- DONE!
-        /* Currently returns id of closest station.  May modify
-           to only get distances to use later.
-           May want to rename function to reflect that change when done.
-         */
-        for(Station station : stationList) {
-            double distance = distToStation(userCoordinates[0], userCoordinates[1],
-                    station.getLat(), station.getLon());
-
-
-            if (distance < stationDist) {
-                stationDist = distance;
-                stationID = station.getId();
-            }
-        }
-
-        return stationID;
     }
 
 
@@ -111,9 +71,9 @@ public class StationDistances {
         double a = Math.pow(latSinOfDiff, 2) + Math.pow(lonSinOfDiff, 2)
                 * Math.cos(latRad1) * Math.cos(latRad2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = earthsRadius *c;
+        //double distance = earthsRadius *c;
 
-        return distance;
+        return earthsRadius *c;
     }
 
 }

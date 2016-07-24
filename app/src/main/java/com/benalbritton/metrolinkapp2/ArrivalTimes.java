@@ -4,11 +4,10 @@ package com.benalbritton.metrolinkapp2;
 import android.content.Context;
 import android.database.Cursor;
 
+import java.sql.Time;
 import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
@@ -46,13 +45,6 @@ public class ArrivalTimes {
         return tableMap;
     }
 
-/*
-    private String pickDBTable() {
-
-        String today = dayOfWeek();
-        return dbTableMap().get(today);
-    }
-*/
 
     private double timeAsHourDouble(String s) {
         String[] hourMin = s.split(":");
@@ -70,7 +62,8 @@ public class ArrivalTimes {
         DatabaseAccess dbAccess = DatabaseAccess.getDbInstance(context);
         ArrayList<ArriveTimeDetail> arriveTimeList = new ArrayList<>();
 
-        double currentTime = new CurrentTime().currentTimeDoubleAsHour();
+        String currentTime = new CurrentTime().timeAsString();
+        //Time currentTime = new CurrentTime().timeAsString();
 
         String closeStation = new StationDistances(context).getStationsInfo().get(0).getId();
 
@@ -80,9 +73,10 @@ public class ArrivalTimes {
             c.moveToFirst();
             while (!c.isAfterLast()) {
                 ArriveTimeDetail arriveTimeDetail = new ArriveTimeDetail();
-
-                //Double time = timeAsHourDouble(c.getString(0));
-                arriveTimeList.add(c.getString(0));
+                arriveTimeDetail.setTimeAsDouble(timeAsHourDouble(c.getString(0)));
+                arriveTimeDetail.setTimeAsString(c.getString(0));
+                arriveTimeDetail.setRouteColorDirection(c.getString(1));
+                arriveTimeList.add(arriveTimeDetail);
                 c.moveToNext();
             }
             c.close();

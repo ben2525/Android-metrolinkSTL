@@ -1,6 +1,7 @@
 package com.benalbritton.metrolinkapp2;
 
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,6 +22,16 @@ public class CurrentTime {
         genericCalendar.setTime(trialTime);
 
         return genericCalendar;
+    }
+
+    public String timeAsString() {
+
+        Calendar calendar = generalCalendar();
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        //Time time = dateFormat.format(calendar.getInstance().getTime());
+
+        String time = dateFormat.format(calendar.getInstance().getTime());
+        return time;
     }
 
 
